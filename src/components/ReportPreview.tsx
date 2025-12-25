@@ -1,7 +1,8 @@
-import { Calendar, Music, Book, Film, Coffee, TrendingUp, Heart, Star, Zap, Award } from "lucide-react";
+import { Calendar, Music, Book, Film, Coffee, TrendingUp, Heart, Star, Zap, Award, Github } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { ReportStyle } from "./StyleSelector";
 import type { ReportData } from "@/lib/api/analyze";
+import AnimatedNumber from "./AnimatedNumber";
 
 interface ReportPreviewProps {
   style: ReportStyle;
@@ -121,11 +122,14 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
               {reportData.highlights.slice(0, 6).map((item, index) => (
                 <Card
                   key={index}
-                  className={`${config.cardBg} p-4 border-0 shadow-sm hover:shadow-md transition-shadow`}
+                  className={`${config.cardBg} p-4 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 opacity-0 animate-fade-in-up`}
+                  style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
                 >
-                  <div className={`${config.accent} mb-2`}>{getIcon(item.icon)}</div>
+                  <div className={`${config.accent} mb-2 animate-bounce-subtle`}>{getIcon(item.icon)}</div>
                   <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                  <p className={`text-xl md:text-2xl font-bold ${config.accent}`}>{item.value}</p>
+                  <p className={`text-xl md:text-2xl font-bold ${config.accent}`}>
+                    <AnimatedNumber value={item.value} duration={2000 + index * 200} />
+                  </p>
                   {item.subtext && <p className="text-xs text-muted-foreground mt-1">{item.subtext}</p>}
                 </Card>
               ))}
@@ -133,14 +137,44 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
           )}
 
           {/* Summary */}
-          <Card className={`${config.cardBg} p-6 border-0`}>
+          <Card className={`${config.cardBg} p-6 border-0 opacity-0 animate-fade-in-up`} style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
             <h4 className={`text-lg font-semibold ${config.accent} mb-3`}>✨ AI 年度感言</h4>
             <p className="text-foreground leading-relaxed whitespace-pre-line">{reportData.summary}</p>
           </Card>
 
+          {/* MBTI Section */}
+          {reportData.mbti && (
+            <Card className={`${config.cardBg} p-6 border-0 mt-6 opacity-0 animate-fade-in-up`} style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
+              <h4 className={`text-lg font-semibold ${config.accent} mb-3`}>🧠 年度 MBTI</h4>
+              <div className="text-center mb-4">
+                <span className={`text-4xl font-bold ${config.accent} animate-pulse-subtle`}>{reportData.mbti.type}</span>
+                <p className={`text-sm ${config.accent} mt-1`}>{reportData.mbti.title}</p>
+              </div>
+              {reportData.mbti.traits && reportData.mbti.traits.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center mb-4">
+                  {reportData.mbti.traits.map((trait, idx) => (
+                    <span key={idx} className="px-3 py-1 bg-background/50 rounded-full text-sm text-foreground/80">
+                      {trait}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="text-foreground leading-relaxed whitespace-pre-line">{reportData.mbti.explanation}</p>
+            </Card>
+          )}
+
           {/* Footer */}
-          <div className="text-center mt-8 pt-6 border-t border-border/50">
-            <p className="text-xs text-muted-foreground">由年度记忆汇总生成 · {new Date().getFullYear()}</p>
+          <div className="text-center mt-8 pt-6 border-t border-border/50 opacity-0 animate-fade-in-up" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
+            <p className="text-xs text-muted-foreground mb-2">由年度记忆汇总生成 · {new Date().getFullYear()}</p>
+            <a 
+              href="https://github.com/1sh1ro/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Github className="w-3.5 h-3.5" />
+              Powered by 1sh1ro
+            </a>
           </div>
         </Card>
       </div>
