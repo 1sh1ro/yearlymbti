@@ -47,20 +47,7 @@ serve(async (req) => {
 2. 提取关键数据点，如：听歌时长、阅读量、观看时长、消费金额、运动步数等
 3. 将所有数据汇总整理成一份有趣的综合年度报告
 
-请以JSON格式返回结果，结构如下：
-{
-  "totalApps": 识别到的App数量,
-  "highlights": [
-    {
-      "icon": "图标类型(music/book/film/coffee/trending/calendar/heart/star/zap/award)",
-      "label": "数据标签",
-      "value": "数据值",
-      "subtext": "补充说明(可选)"
-    }
-  ],
-  "summary": "一段有趣的、个性化的年度总结感言（100-200字）",
-  "apps": ["识别到的App列表"]
-}
+风格要求：${getStyleDescription(style)}
 
 重要提示：
 - 尽可能识别截图中的所有数据
@@ -68,8 +55,9 @@ serve(async (req) => {
 - 总结语言要有趣、温暖、富有洞察力
 - highlights数组最多包含8个最重要的数据点`;
 
-    const userPrompt = `请分析以下${images.length}张年度报告截图，提取数据并生成汇总报告。报告风格要求：${getStyleDescription(style)}`;
+    const userPrompt = `请分析以下${images.length}张年度报告截图，提取数据并生成汇总报告。`;
 
+    // Use tool calling for structured output
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -77,7 +65,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-pro',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { 
@@ -88,7 +76,62 @@ serve(async (req) => {
             ]
           }
         ],
-        max_tokens: 2000,
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "generate_annual_report",
+              description: "生成年度报告汇总",
+              parameters: {
+                type: "object",
+                properties: {
+                  totalApps: {
+                    type: "number",
+                    description: "识别到的App数量"
+                  },
+                  highlights: {
+                    type: "array",
+                    description: "关键数据亮点，最多8个",
+                    items: {
+                      type: "object",
+                      properties: {
+                        icon: {
+                          type: "string",
+                          enum: ["music", "book", "film", "coffee", "trending", "calendar", "heart", "star", "zap", "award", "clock", "map", "shopping-cart", "headphones", "gamepad", "camera"],
+                          description: "图标类型"
+                        },
+                        label: {
+                          type: "string",
+                          description: "数据标签，如'年度听歌时长'"
+                        },
+                        value: {
+                          type: "string",
+                          description: "数据值，如'1234小时'"
+                        },
+                        subtext: {
+                          type: "string",
+                          description: "补充说明，可选"
+                        }
+                      },
+                      required: ["icon", "label", "value"]
+                    }
+                  },
+                  summary: {
+                    type: "string",
+                    description: "一段有趣的、个性化的年度总结感言（100-200字）"
+                  },
+                  apps: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "识别到的App名称列表"
+                  }
+                },
+                required: ["totalApps", "highlights", "summary", "apps"]
+              }
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "generate_annual_report" } }
       }),
     });
 
@@ -118,36 +161,28 @@ serve(async (req) => {
     const data = await response.json();
     console.log('AI response received');
     
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) {
-      console.error('No content in AI response');
+    // Extract tool call result
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall || toolCall.function.name !== 'generate_annual_report') {
+      console.error('No valid tool call in AI response:', JSON.stringify(data));
       return new Response(
-        JSON.stringify({ error: 'AI 返回内容为空' }),
+        JSON.stringify({ error: 'AI 返回格式错误' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Parse the JSON from the response
     let reportData;
     try {
-      // Try to extract JSON from the response (it might be wrapped in markdown code blocks)
-      const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/```\s*([\s\S]*?)\s*```/);
-      const jsonStr = jsonMatch ? jsonMatch[1] : content;
-      reportData = JSON.parse(jsonStr.trim());
+      reportData = JSON.parse(toolCall.function.arguments);
+      console.log('Report generated successfully with', reportData.highlights?.length || 0, 'highlights');
     } catch (parseError) {
-      console.error('Failed to parse AI response as JSON:', parseError);
-      console.log('Raw content:', content);
-      
-      // Return a fallback structure with the raw summary
-      reportData = {
-        totalApps: images.length,
-        highlights: [],
-        summary: content,
-        apps: []
-      };
+      console.error('Failed to parse tool call arguments:', parseError);
+      console.error('Raw arguments:', toolCall.function.arguments);
+      return new Response(
+        JSON.stringify({ error: 'AI 返回数据解析失败' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-
-    console.log('Report generated successfully');
     
     return new Response(
       JSON.stringify({ success: true, report: reportData }),
