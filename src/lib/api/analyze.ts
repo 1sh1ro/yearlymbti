@@ -8,11 +8,19 @@ export interface ReportHighlight {
   subtext?: string;
 }
 
+export interface ReportMBTI {
+  type: string;
+  title: string;
+  traits: string[];
+  explanation: string;
+}
+
 export interface ReportData {
   totalApps: number;
   highlights: ReportHighlight[];
   summary: string;
   apps?: string[];
+  mbti?: ReportMBTI;
 }
 
 export async function analyzeReports(

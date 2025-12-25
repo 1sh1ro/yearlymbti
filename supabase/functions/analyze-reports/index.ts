@@ -40,12 +40,19 @@ serve(async (req) => {
       }
     }));
 
-    const systemPrompt = `你是一个专业的年度报告分析师。用户会上传多个来自不同App的年度报告截图。
+    const systemPrompt = `你是一个专业的年度报告分析师和人格洞察专家。用户会上传多个来自不同App的年度报告截图。
 
 你的任务是：
-1. 仔细识别每张截图中的信息，包括App名称、统计数据、排名等
-2. 提取关键数据点，如：听歌时长、阅读量、观看时长、消费金额、运动步数等
+1. 仔细识别每张截图中的信息，包括App名称、统计数据、排名、偏好等
+2. 提取关键数据点，如：听歌时长、阅读量、观看时长、消费金额、运动步数、深夜活跃时间等
 3. 将所有数据汇总整理成一份有趣的综合年度报告
+4. 【重要】根据用户的数据行为，分析并生成一个"年度MBTI人格"，这不是标准MBTI，而是基于用户数据行为的趣味人格分析
+
+年度MBTI生成规则：
+- 第一个字母：E(外向型-社交App活跃) 或 I(内向型-独处App多如阅读、听歌)
+- 第二个字母：N(直觉型-偏爱新鲜内容/探索) 或 S(感知型-偏爱熟悉内容/重复)
+- 第三个字母：T(思考型-知识/学习类内容多) 或 F(情感型-娱乐/生活类内容多)
+- 第四个字母：J(计划型-规律使用/早睡早起) 或 P(随性型-不规律/深夜党)
 
 风格要求：${getStyleDescription(style)}
 
@@ -53,7 +60,8 @@ serve(async (req) => {
 - 尽可能识别截图中的所有数据
 - 如果某些数据无法识别，可以跳过
 - 总结语言要有趣、温暖、富有洞察力
-- highlights数组最多包含8个最重要的数据点`;
+- highlights数组最多包含8个最重要的数据点
+- MBTI分析要具体、有趣，结合用户实际数据来解释`;
 
     const userPrompt = `请分析以下${images.length}张年度报告截图，提取数据并生成汇总报告。`;
 
@@ -124,9 +132,33 @@ serve(async (req) => {
                     type: "array",
                     items: { type: "string" },
                     description: "识别到的App名称列表"
+                  },
+                  mbti: {
+                    type: "object",
+                    description: "年度MBTI人格分析",
+                    properties: {
+                      type: {
+                        type: "string",
+                        description: "四个字母的MBTI类型，如INFP、ESTJ等"
+                      },
+                      title: {
+                        type: "string",
+                        description: "一个有趣的人格称号，如'深夜书虫'、'音乐游侠'、'知识猎手'等"
+                      },
+                      traits: {
+                        type: "array",
+                        items: { type: "string" },
+                        description: "3-4个基于数据的人格特点描述，每条15-25字"
+                      },
+                      explanation: {
+                        type: "string",
+                        description: "详细解释为什么是这个MBTI类型，结合具体数据分析（80-150字）"
+                      }
+                    },
+                    required: ["type", "title", "traits", "explanation"]
                   }
                 },
-                required: ["totalApps", "highlights", "summary", "apps"]
+                required: ["totalApps", "highlights", "summary", "apps", "mbti"]
               }
             }
           }
