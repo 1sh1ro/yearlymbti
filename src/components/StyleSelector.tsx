@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export type ReportStyle = "playful" | "minimal" | "retro" | "tech" | "artistic";
@@ -58,9 +57,9 @@ const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => 
   const { t } = useLanguage();
 
   return (
-    <section className="py-10 md:py-12 px-6">
+    <section className="py-6 md:py-8 px-6">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-xl md:text-2xl font-semibold text-foreground text-center mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-foreground text-center mb-6">
           {t("style.title")}
         </h2>
 
@@ -69,16 +68,19 @@ const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => 
             <button
               key={style.id}
               className={`
-                flex items-center gap-2 px-4 py-2.5 rounded-full transition-all text-base
+                relative flex items-center gap-2.5 px-5 py-3 rounded-2xl transition-all duration-300 text-base overflow-hidden group
                 ${selectedStyle === style.id 
-                  ? "bg-primary text-primary-foreground shadow-md" 
-                  : "bg-muted hover:bg-muted/80 text-foreground"
+                  ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/30 scale-105" 
+                  : "bg-card hover:bg-card/80 text-foreground border border-border/60 hover:border-primary/40 hover:shadow-md"
                 }
               `}
               onClick={() => onStyleChange(style.id)}
             >
-              <span>{style.preview}</span>
-              <span className="font-medium">{t(style.nameKey)}</span>
+              <span className="text-xl relative z-10">{style.preview}</span>
+              <span className="font-semibold relative z-10">{t(style.nameKey)}</span>
+              {selectedStyle === style.id && (
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent" />
+              )}
             </button>
           ))}
         </div>

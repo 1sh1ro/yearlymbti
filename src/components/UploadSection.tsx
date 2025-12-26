@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -20,7 +20,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   const [progress, setProgress] = useState(0);
   const [processingText, setProcessingText] = useState("");
   const { toast } = useToast();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const handleFiles = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -115,19 +115,24 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   };
 
   return (
-    <section className="py-6 md:py-8 px-6">
+    <section className="py-8 md:py-10 px-6">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
-          {t("upload.title")}
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+            {t("upload.title")}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {t("upload.formats")}
+          </p>
+        </div>
 
         {/* Upload Area */}
         <Card
           className={`
-            relative border-2 border-dashed transition-all duration-300 cursor-pointer
+            relative border-2 border-dashed transition-all duration-300 cursor-pointer overflow-hidden
             ${isDragging 
-              ? "border-primary bg-primary/5 scale-[1.02]" 
-              : "border-border hover:border-primary/50 hover:bg-card/50"
+              ? "border-primary bg-primary/10 scale-[1.02] shadow-lg shadow-primary/20" 
+              : "border-border/60 hover:border-primary/50 hover:bg-card/80 hover:shadow-md"
             }
             ${isProcessing ? "pointer-events-none" : ""}
           `}
@@ -135,23 +140,34 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <label className="flex flex-col items-center justify-center p-6 md:p-8 cursor-pointer touch-manipulation">
+          {/* Background decoration */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+          
+          <label className="relative flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer touch-manipulation">
             {isProcessing ? (
               <>
-                <Loader2 className="w-10 h-10 text-primary animate-spin mb-3" />
-                <p className="text-base font-medium text-foreground mb-3">{processingText}</p>
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                </div>
+                <p className="text-base font-medium text-foreground mb-4">{processingText}</p>
                 <div className="w-full max-w-xs">
                   <Progress value={progress} className="h-2" />
                 </div>
               </>
             ) : (
               <>
-                <Upload className={`w-10 h-10 mb-3 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
-                <p className="text-base font-medium text-foreground">
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${
+                  isDragging 
+                    ? "bg-primary/20 scale-110" 
+                    : "bg-gradient-to-br from-primary/10 to-primary/5"
+                }`}>
+                  <ImagePlus className={`w-8 h-8 transition-colors ${isDragging ? "text-primary" : "text-primary/70"}`} />
+                </div>
+                <p className="text-base font-semibold text-foreground mb-1">
                   <span className="hidden md:inline">{t("upload.dragOrClick")}</span>
                   <span className="md:hidden">{t("upload.clickToUpload")}</span>
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">{t("upload.formats")}</p>
+                <p className="text-sm text-muted-foreground">{t("upload.formats")}</p>
               </>
             )}
             <input
@@ -167,15 +183,15 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
 
         {/* Preview Grid */}
         {previews.length > 0 && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-muted-foreground">
+          <div className="mt-6 animate-fade-in">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium text-foreground">
                 {t("upload.uploaded")} {previews.length} {t("upload.images")}
               </span>
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 text-sm px-3"
+                className="h-8 text-sm px-3 text-muted-foreground hover:text-destructive"
                 onClick={() => {
                   previews.forEach(p => URL.revokeObjectURL(p));
                   setImages([]);
@@ -191,18 +207,19 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
               {previews.map((preview, index) => (
                 <div 
                   key={index}
-                  className="relative group aspect-[9/16] rounded-lg overflow-hidden bg-muted"
+                  className="relative group aspect-[9/16] rounded-xl overflow-hidden bg-muted shadow-sm hover:shadow-md transition-shadow"
                 >
                   <img
                     src={preview}
                     alt={`${t("upload.screenshot")} ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <button
                     onClick={() => removeImage(index)}
-                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               ))}
