@@ -21,9 +21,7 @@ const HeroSection = () => {
         </div>
         
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-slide-up">
-          <span className="bg-gradient-to-r from-primary via-chart-2 to-chart-1 bg-clip-text text-transparent">
-            你的年度故事
-          </span>
+          <span className="text-primary">你的年度故事</span>
           <br />
           <span className="text-foreground">一键汇总</span>
         </h1>
