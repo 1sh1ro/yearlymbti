@@ -131,22 +131,30 @@ const AnalysisProgress = ({ stages, onEditData, onReanalyze }: AnalysisProgressP
         return (
           <div className="text-sm space-y-2">
             {insightData.highlights?.map((h, i) => (
-              <div key={i} className="flex items-center justify-between p-2 bg-secondary/50 rounded">
-                <div>
-                  <span className="font-medium">{h.label}:</span>{" "}
-                  <span className="text-primary">{h.value}</span>
-                  {h.subtext && <span className="text-xs text-muted-foreground ml-2">{h.subtext}</span>}
+              <div key={i} className="flex items-start justify-between gap-3 p-3 bg-secondary/50 rounded">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="font-medium text-foreground truncate">{h.label}</span>
+                    <span className="text-primary font-medium shrink-0">{h.value}</span>
+                  </div>
+                  {h.subtext && (
+                    <p className="text-xs text-muted-foreground mt-1 leading-snug break-words">
+                      {h.subtext}
+                    </p>
+                  )}
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 shrink-0">
                   <button
                     onClick={() => toggleLike(i)}
-                    className={`p-1 rounded hover:bg-secondary ${likedInsights.has(i) ? 'text-green-500' : 'text-muted-foreground'}`}
+                    className={`p-1 rounded hover:bg-secondary ${likedInsights.has(i) ? 'text-primary' : 'text-muted-foreground'}`}
+                    aria-label="点赞"
                   >
                     <ThumbsUp className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => toggleDislike(i)}
-                    className={`p-1 rounded hover:bg-secondary ${dislikedInsights.has(i) ? 'text-red-500' : 'text-muted-foreground'}`}
+                    className={`p-1 rounded hover:bg-secondary ${dislikedInsights.has(i) ? 'text-destructive' : 'text-muted-foreground'}`}
+                    aria-label="不喜欢"
                   >
                     <ThumbsDown className="w-4 h-4" />
                   </button>
