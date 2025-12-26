@@ -101,8 +101,11 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      {/* Social Links - Top Left */}
-      <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
+      {/* Logo & Social Links - Top Left */}
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-3">
+        <div className="px-3 py-1.5 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50">
+          <span className="text-sm font-medium text-foreground">Powered by <span className="font-bold text-primary">Xulas</span></span>
+        </div>
         <a
           href="https://x.com/xulaswa/"
           target="_blank"
