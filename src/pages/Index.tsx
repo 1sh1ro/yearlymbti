@@ -21,6 +21,7 @@ const Index = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [extractedData, setExtractedData] = useState<ExtractedAppData[]>([]);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const startAnalysis = useCallback(async (strictMode: StrictMode = 'normal') => {
     if (images.length === 0) return;
@@ -75,7 +76,7 @@ const Index = () => {
         variant: "destructive",
       });
     }
-  }, [images, selectedStyle, toast]);
+  }, [images, selectedStyle, toast, t]);
 
   const handleGenerate = () => startAnalysis('normal');
 
@@ -87,7 +88,7 @@ const Index = () => {
     setEditDialogOpen(true);
   };
 
-  const handleSaveEditedData = (newData: ExtractedAppData[]) => {
+  const handleSaveEditedData = useCallback((newData: ExtractedAppData[]) => {
     setExtractedData(newData);
     toast({
       title: t("edit.dataSaved"),
