@@ -114,14 +114,14 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
               {reportData.highlights.slice(0, 6).map((item, index) => (
                 <Card
                   key={index}
-                  className={`${config.cardBg} p-4 border-0 shadow-sm`}
+                  className={`${config.cardBg} p-4 border-0 shadow-sm h-auto min-h-fit`}
                 >
                   <div className={`${config.accent} mb-2`}>{getIcon(item.icon)}</div>
                   <p className="text-sm text-muted-foreground">{item.label}</p>
-                  <p className={`text-xl md:text-2xl font-bold ${config.accent}`}>
+                  <p className={`text-xl md:text-2xl font-bold ${config.accent} break-words`}>
                     <AnimatedNumber value={item.value} duration={2000 + index * 200} />
                   </p>
-                  {item.subtext && <p className="text-sm text-muted-foreground mt-1">{item.subtext}</p>}
+                  {item.subtext && <p className="text-sm text-muted-foreground mt-1 break-words">{item.subtext}</p>}
                 </Card>
               ))}
             </div>
