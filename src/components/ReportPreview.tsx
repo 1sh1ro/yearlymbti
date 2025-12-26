@@ -4,6 +4,7 @@ import type { ReportStyle } from "./StyleSelector";
 import type { ReportData } from "@/lib/api/analyze";
 import AnimatedNumber from "./AnimatedNumber";
 import ShareCard from "./ShareCard";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ReportPreviewProps {
   style: ReportStyle;
@@ -56,22 +57,55 @@ const getIcon = (iconName: string) => {
   return iconMap[iconName.toLowerCase()] || <Star className="w-5 h-5" />;
 };
 
-const mockData: ReportData = {
-  totalApps: 6,
-  highlights: [
-    { icon: "music", label: "听歌时长", value: "2,847 小时", subtext: "超过 99% 的用户" },
-    { icon: "book", label: "阅读书籍", value: "52 本", subtext: "最爱科幻类" },
-    { icon: "film", label: "观看视频", value: "1,024 小时", subtext: "最爱知识区" },
-    { icon: "coffee", label: "外卖订单", value: "365 单", subtext: "最爱奶茶" },
-    { icon: "trending", label: "运动步数", value: "365 万步", subtext: "相当于绕地球 0.5 圈" },
-    { icon: "calendar", label: "活跃天数", value: "328 天", subtext: "坚持就是胜利" },
-  ],
-  summary:
-    "2025年，你在数字世界里留下了丰富的足迹。音乐陪伴了你无数个深夜，书籍带你探索了52个不同的世界。你是一个热爱生活、充满好奇心的人。新的一年，继续做那个有趣的自己吧！",
-};
-
 const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
+  const { t, language } = useLanguage();
   const config = styleConfigs[style];
+  
+  const mockData: ReportData = {
+    totalApps: 6,
+    highlights: [
+      { 
+        icon: "music", 
+        label: language === "zh" ? "听歌时长" : "Listening Time", 
+        value: language === "zh" ? "2,847 小时" : "2,847 hours", 
+        subtext: language === "zh" ? "超过 99% 的用户" : "Top 1% of users" 
+      },
+      { 
+        icon: "book", 
+        label: language === "zh" ? "阅读书籍" : "Books Read", 
+        value: language === "zh" ? "52 本" : "52 books", 
+        subtext: language === "zh" ? "最爱科幻类" : "Favorite: Sci-Fi" 
+      },
+      { 
+        icon: "film", 
+        label: language === "zh" ? "观看视频" : "Watch Time", 
+        value: language === "zh" ? "1,024 小时" : "1,024 hours", 
+        subtext: language === "zh" ? "最爱知识区" : "Favorite: Knowledge" 
+      },
+      { 
+        icon: "coffee", 
+        label: language === "zh" ? "外卖订单" : "Orders", 
+        value: language === "zh" ? "365 单" : "365 orders", 
+        subtext: language === "zh" ? "最爱奶茶" : "Favorite: Milk Tea" 
+      },
+      { 
+        icon: "trending", 
+        label: language === "zh" ? "运动步数" : "Steps", 
+        value: language === "zh" ? "365 万步" : "3.65M steps", 
+        subtext: language === "zh" ? "相当于绕地球 0.5 圈" : "≈ 0.5x Earth circumference" 
+      },
+      { 
+        icon: "calendar", 
+        label: language === "zh" ? "活跃天数" : "Active Days", 
+        value: language === "zh" ? "328 天" : "328 days", 
+        subtext: language === "zh" ? "坚持就是胜利" : "Consistency is key" 
+      },
+    ],
+    summary: language === "zh" 
+      ? "2025年，你在数字世界里留下了丰富的足迹。音乐陪伴了你无数个深夜，书籍带你探索了52个不同的世界。你是一个热爱生活、充满好奇心的人。新的一年，继续做那个有趣的自己吧！"
+      : "In 2025, you left rich footprints in the digital world. Music accompanied countless late nights, books took you to 52 different worlds. You're a curious soul who loves life. Keep being your interesting self in the new year!",
+  };
+  
   const reportData = data || mockData;
   const isRealData = !!data;
 
@@ -79,7 +113,7 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
     <section className="py-12 md:py-16 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-xl md:text-2xl font-semibold text-foreground text-center mb-6">
-          {isRealData ? "🎉 你的年度报告" : "预览效果"}
+          {isRealData ? t("report.title") : t("report.preview")}
         </h2>
 
         {/* Report Container */}
@@ -88,16 +122,18 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center">
                 <div className="w-14 h-14 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-lg font-medium text-foreground">AI 正在分析...</p>
-                <p className="text-sm text-muted-foreground mt-2">请稍候 30-60 秒</p>
+                <p className="text-lg font-medium text-foreground">{t("report.analyzing")}</p>
+                <p className="text-sm text-muted-foreground mt-2">{t("report.wait")}</p>
               </div>
             </div>
           )}
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h3 className={`text-3xl md:text-4xl font-bold ${config.accent} mb-2`}>2025 年度总结</h3>
-            <p className="text-sm text-muted-foreground">来自 {reportData.totalApps} 个 App</p>
+            <h3 className={`text-3xl md:text-4xl font-bold ${config.accent} mb-2`}>{t("report.yearSummary")}</h3>
+            <p className="text-sm text-muted-foreground">
+              {t("report.fromApps").replace("{count}", String(reportData.totalApps))}
+            </p>
             {reportData.apps && reportData.apps.length > 0 && (
               <div className="flex flex-wrap gap-2 justify-center mt-4">
                 {reportData.apps.map((app, idx) => (
@@ -130,14 +166,14 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
 
           {/* Summary */}
           <Card className={`${config.cardBg} p-5 border-0`}>
-            <h4 className={`text-base font-semibold ${config.accent} mb-3`}>✨ AI 年度感言</h4>
+            <h4 className={`text-base font-semibold ${config.accent} mb-3`}>{t("report.aiComment")}</h4>
             <p className="text-foreground leading-relaxed whitespace-pre-line">{reportData.summary}</p>
           </Card>
 
           {/* MBTI Section */}
           {reportData.mbti && (
             <Card className={`${config.cardBg} p-5 border-0 mt-5`}>
-              <h4 className={`text-base font-semibold ${config.accent} mb-3`}>🧠 年度 MBTI</h4>
+              <h4 className={`text-base font-semibold ${config.accent} mb-3`}>{t("report.mbtiTitle")}</h4>
               <div className="text-center mb-4">
                 <span className={`text-4xl font-bold ${config.accent}`}>{reportData.mbti.type}</span>
                 <p className={`text-sm ${config.accent} mt-1`}>{reportData.mbti.title}</p>

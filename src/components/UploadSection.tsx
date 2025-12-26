@@ -1,10 +1,11 @@
 import { useState, useCallback } from "react";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { compressImage, formatFileSize } from "@/lib/imageCompression";
+import { useLanguage } from "@/contexts/LanguageContext";
 import PrivacyNotice from "./PrivacyNotice";
 
 interface UploadSectionProps {
@@ -19,6 +20,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   const [progress, setProgress] = useState(0);
   const [processingText, setProcessingText] = useState("");
   const { toast } = useToast();
+  const { t, language } = useLanguage();
 
   const handleFiles = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -42,7 +44,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
       const file = imageFiles[i];
       totalOriginalSize += file.size;
       
-      setProcessingText(`正在压缩 ${i + 1}/${imageFiles.length}`);
+      setProcessingText(`${t("upload.compressing")} ${i + 1}/${imageFiles.length}`);
       setProgress(Math.round(((i + 0.5) / imageFiles.length) * 100));
       
       try {
@@ -56,7 +58,6 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
         newFiles.push(compressedFile);
         newPreviews.push(URL.createObjectURL(compressedFile));
       } catch (error) {
-        // If compression fails, use original file
         newFiles.push(file);
         newPreviews.push(URL.createObjectURL(file));
         totalCompressedSize += file.size;
@@ -79,12 +80,15 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
     const savedPercent = totalOriginalSize > 0 ? Math.round((savedSize / totalOriginalSize) * 100) : 0;
     
     toast({
-      title: "上传成功",
+      title: t("upload.success"),
       description: savedPercent > 5 
-        ? `已添加 ${newFiles.length} 张，压缩节省 ${formatFileSize(savedSize)} (${savedPercent}%)`
-        : `已添加 ${newFiles.length} 张截图`,
+        ? t("upload.successDesc")
+            .replace("{count}", String(newFiles.length))
+            .replace("{saved}", formatFileSize(savedSize))
+            .replace("{percent}", String(savedPercent))
+        : t("upload.successSimple").replace("{count}", String(newFiles.length)),
     });
-  }, [images, previews, onImagesChange, toast]);
+  }, [images, previews, onImagesChange, toast, t]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -114,7 +118,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
     <section className="py-12 md:py-16 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-xl md:text-2xl font-semibold text-foreground text-center mb-6">
-          上传截图
+          {t("upload.title")}
         </h2>
 
         {/* Upload Area */}
@@ -144,9 +148,10 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
               <>
                 <Upload className={`w-10 h-10 mb-3 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
                 <p className="text-base font-medium text-foreground">
-                  <span className="hidden md:inline">拖拽或</span>点击上传
+                  <span className="hidden md:inline">{t("upload.dragOrClick")}</span>
+                  <span className="md:hidden">{t("upload.clickToUpload")}</span>
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">PNG、JPG、WEBP</p>
+                <p className="text-sm text-muted-foreground mt-1">{t("upload.formats")}</p>
               </>
             )}
             <input
@@ -164,7 +169,9 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
         {previews.length > 0 && (
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-muted-foreground">已上传 {previews.length} 张</span>
+              <span className="text-sm text-muted-foreground">
+                {t("upload.uploaded")} {previews.length} {t("upload.images")}
+              </span>
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -176,7 +183,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
                   onImagesChange([]);
                 }}
               >
-                清空
+                {t("upload.clear")}
               </Button>
             </div>
             
@@ -188,7 +195,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
                 >
                   <img
                     src={preview}
-                    alt={`截图 ${index + 1}`}
+                    alt={`${t("upload.screenshot")} ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
                   <button

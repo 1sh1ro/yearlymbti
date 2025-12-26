@@ -6,7 +6,9 @@ import GenerateButton from "@/components/GenerateButton";
 import ReportPreview from "@/components/ReportPreview";
 import AnalysisProgress from "@/components/AnalysisProgress";
 import DataEditDialog from "@/components/DataEditDialog";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { analyzeReportsStream, type ReportData, type AnalysisStage, type ExtractedAppData, type StrictMode } from "@/lib/api/analyze";
 
 const Index = () => {
@@ -51,14 +53,14 @@ const Index = () => {
           setReportData(report);
           setIsGenerating(false);
           toast({
-            title: "生成成功！🎉",
-            description: "你的年度报告已经准备好了",
+            title: t("generate.success"),
+            description: t("generate.successDesc"),
           });
         },
         onError: (error) => {
           setIsGenerating(false);
           toast({
-            title: "生成失败",
+            title: t("generate.error"),
             description: error,
             variant: "destructive",
           });
@@ -68,8 +70,8 @@ const Index = () => {
       console.error('Error generating report:', error);
       setIsGenerating(false);
       toast({
-        title: "生成失败",
-        description: error instanceof Error ? error.message : "请稍后重试",
+        title: t("generate.error"),
+        description: error instanceof Error ? error.message : t("generate.retry"),
         variant: "destructive",
       });
     }
@@ -87,17 +89,16 @@ const Index = () => {
 
   const handleSaveEditedData = (newData: ExtractedAppData[]) => {
     setExtractedData(newData);
-    // Re-run analysis from stage 3 with edited data
-    // For now, just restart the analysis
     toast({
-      title: "数据已保存",
-      description: "正在使用修正后的数据重新分析...",
+      title: t("edit.dataSaved"),
+      description: t("edit.dataSavedDesc"),
     });
     startAnalysis('normal');
-  };
+  }, [t, toast, startAnalysis]);
 
   return (
     <main className="min-h-screen bg-background">
+      <LanguageSwitcher />
       <HeroSection />
       <UploadSection onImagesChange={setImages} />
       <StyleSelector selectedStyle={selectedStyle} onStyleChange={setSelectedStyle} />
@@ -137,7 +138,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 text-center">
         <p className="text-base text-muted-foreground">
-          © {new Date().getFullYear()} 年度记忆汇总
+          {t("footer.copyright").replace("{year}", String(new Date().getFullYear()))}
         </p>
       </footer>
     </main>
