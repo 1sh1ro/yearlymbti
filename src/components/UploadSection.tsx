@@ -1,8 +1,10 @@
 import { useState, useCallback } from "react";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { compressImage, formatFileSize } from "@/lib/imageCompression";
 
 interface UploadSectionProps {
   onImagesChange: (images: File[]) => void;
@@ -12,33 +14,75 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [processingText, setProcessingText] = useState("");
   const { toast } = useToast();
 
-  const handleFiles = useCallback((files: FileList | null) => {
-    if (!files) return;
+  const handleFiles = useCallback(async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
     
+    setIsProcessing(true);
+    setProgress(0);
+    
+    const imageFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
+    
+    if (imageFiles.length === 0) {
+      setIsProcessing(false);
+      return;
+    }
+
     const newFiles: File[] = [];
     const newPreviews: string[] = [];
+    let totalOriginalSize = 0;
+    let totalCompressedSize = 0;
     
-    Array.from(files).forEach((file) => {
-      if (file.type.startsWith("image/")) {
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i];
+      totalOriginalSize += file.size;
+      
+      setProcessingText(`正在压缩 ${i + 1}/${imageFiles.length}`);
+      setProgress(Math.round(((i + 0.5) / imageFiles.length) * 100));
+      
+      try {
+        const compressedFile = await compressImage(file, {
+          maxWidth: 1920,
+          maxHeight: 1920,
+          quality: 0.8,
+        });
+        
+        totalCompressedSize += compressedFile.size;
+        newFiles.push(compressedFile);
+        newPreviews.push(URL.createObjectURL(compressedFile));
+      } catch (error) {
+        // If compression fails, use original file
         newFiles.push(file);
         newPreviews.push(URL.createObjectURL(file));
+        totalCompressedSize += file.size;
       }
-    });
-    
-    if (newFiles.length > 0) {
-      const updatedImages = [...images, ...newFiles];
-      const updatedPreviews = [...previews, ...newPreviews];
-      setImages(updatedImages);
-      setPreviews(updatedPreviews);
-      onImagesChange(updatedImages);
       
-      toast({
-        title: "上传成功",
-        description: `已添加 ${newFiles.length} 张截图`,
-      });
+      setProgress(Math.round(((i + 1) / imageFiles.length) * 100));
     }
+    
+    const updatedImages = [...images, ...newFiles];
+    const updatedPreviews = [...previews, ...newPreviews];
+    setImages(updatedImages);
+    setPreviews(updatedPreviews);
+    onImagesChange(updatedImages);
+    
+    setIsProcessing(false);
+    setProgress(0);
+    setProcessingText("");
+    
+    const savedSize = totalOriginalSize - totalCompressedSize;
+    const savedPercent = totalOriginalSize > 0 ? Math.round((savedSize / totalOriginalSize) * 100) : 0;
+    
+    toast({
+      title: "上传成功",
+      description: savedPercent > 5 
+        ? `已添加 ${newFiles.length} 张，压缩节省 ${formatFileSize(savedSize)} (${savedPercent}%)`
+        : `已添加 ${newFiles.length} 张截图`,
+    });
   }, [images, previews, onImagesChange, toast]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -85,30 +129,51 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
               ? "border-primary bg-primary/5 scale-[1.02]" 
               : "border-border hover:border-primary/50 hover:bg-card/50"
             }
+            ${isProcessing ? "pointer-events-none" : ""}
           `}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
           <label className="flex flex-col items-center justify-center p-6 md:p-10 cursor-pointer touch-manipulation">
-            <div className={`
-              w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
-              ${isDragging ? "bg-primary/20" : "bg-muted/50"}
-            `}>
-              <Upload className={`w-7 h-7 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
-            </div>
-            <p className="text-base font-medium text-foreground mb-1">
-              <span className="hidden md:inline">拖拽或</span>点击上传
-            </p>
-            <p className="text-xs text-muted-foreground">
-              PNG、JPG、WEBP
-            </p>
+            {isProcessing ? (
+              <>
+                <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 bg-primary/20">
+                  <Loader2 className="w-7 h-7 text-primary animate-spin" />
+                </div>
+                <p className="text-base font-medium text-foreground mb-2">
+                  {processingText}
+                </p>
+                <div className="w-full max-w-xs">
+                  <Progress value={progress} className="h-2" />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {progress}%
+                </p>
+              </>
+            ) : (
+              <>
+                <div className={`
+                  w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
+                  ${isDragging ? "bg-primary/20" : "bg-muted/50"}
+                `}>
+                  <Upload className={`w-7 h-7 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
+                </div>
+                <p className="text-base font-medium text-foreground mb-1">
+                  <span className="hidden md:inline">拖拽或</span>点击上传
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  PNG、JPG、WEBP（自动压缩）
+                </p>
+              </>
+            )}
             <input
               type="file"
               accept="image/*"
               multiple
               className="hidden"
               onChange={(e) => handleFiles(e.target.files)}
+              disabled={isProcessing}
             />
           </label>
         </Card>
