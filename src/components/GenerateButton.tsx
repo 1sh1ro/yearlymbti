@@ -9,13 +9,13 @@ interface GenerateButtonProps {
 
 const GenerateButton = ({ disabled, isLoading, onClick }: GenerateButtonProps) => {
   return (
-    <section className="py-12 px-4">
-      <div className="max-w-md mx-auto text-center">
+    <section className="py-8 md:py-10 px-4">
+      <div className="max-w-sm mx-auto text-center">
         <Button
           size="lg"
           disabled={disabled || isLoading}
           onClick={onClick}
-          className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary via-chart-2 to-chart-1 hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {isLoading ? (
             <>
