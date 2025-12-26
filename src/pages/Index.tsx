@@ -57,9 +57,9 @@ const Index = () => {
       />
       
       {/* Footer */}
-      <footer className="py-8 text-center border-t border-border">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} 年度记忆汇总 · 让回忆更有意义
+      <footer className="py-4 text-center">
+        <p className="text-xs text-muted-foreground">
+          © {new Date().getFullYear()} 年度记忆汇总
         </p>
       </footer>
     </main>
