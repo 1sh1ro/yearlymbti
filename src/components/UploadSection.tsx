@@ -110,16 +110,11 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   };
 
   return (
-    <section className="py-12 md:py-16 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-            上传年度报告截图
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            支持微信读书、网易云音乐、B站、抖音、支付宝等
-          </p>
-        </div>
+    <section className="py-8 md:py-12 px-4">
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
+          上传截图
+        </h2>
 
         {/* Upload Area */}
         <Card
@@ -135,36 +130,22 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <label className="flex flex-col items-center justify-center p-6 md:p-10 cursor-pointer touch-manipulation">
+          <label className="flex flex-col items-center justify-center p-5 md:p-8 cursor-pointer touch-manipulation">
             {isProcessing ? (
               <>
-                <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 bg-primary/20">
-                  <Loader2 className="w-7 h-7 text-primary animate-spin" />
+                <Loader2 className="w-8 h-8 text-primary animate-spin mb-2" />
+                <p className="text-sm font-medium text-foreground mb-2">{processingText}</p>
+                <div className="w-full max-w-[200px]">
+                  <Progress value={progress} className="h-1.5" />
                 </div>
-                <p className="text-base font-medium text-foreground mb-2">
-                  {processingText}
-                </p>
-                <div className="w-full max-w-xs">
-                  <Progress value={progress} className="h-2" />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {progress}%
-                </p>
               </>
             ) : (
               <>
-                <div className={`
-                  w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
-                  ${isDragging ? "bg-primary/20" : "bg-muted/50"}
-                `}>
-                  <Upload className={`w-7 h-7 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
-                </div>
-                <p className="text-base font-medium text-foreground mb-1">
+                <Upload className={`w-8 h-8 mb-2 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
+                <p className="text-sm font-medium text-foreground">
                   <span className="hidden md:inline">拖拽或</span>点击上传
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  PNG、JPG、WEBP（自动压缩）
-                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">PNG、JPG、WEBP</p>
               </>
             )}
             <input
@@ -180,15 +161,13 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
 
         {/* Preview Grid */}
         {previews.length > 0 && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium text-foreground">
-                已上传 {previews.length} 张
-              </h3>
+          <div className="mt-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-muted-foreground">已上传 {previews.length} 张</span>
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 text-xs"
+                className="h-7 text-xs px-2"
                 onClick={() => {
                   previews.forEach(p => URL.revokeObjectURL(p));
                   setImages([]);
@@ -200,30 +179,23 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
               {previews.map((preview, index) => (
                 <div 
                   key={index}
-                  className="relative group aspect-[9/16] rounded-lg overflow-hidden bg-muted"
+                  className="relative group aspect-[9/16] rounded-md overflow-hidden bg-muted"
                 >
                   <img
                     src={preview}
                     alt={`截图 ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-all" />
                   <button
                     onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 w-5 h-5 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3 h-3" />
                   </button>
-                  <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex items-center gap-1 text-xs text-primary-foreground bg-secondary/80 backdrop-blur px-2 py-1 rounded">
-                      <ImageIcon className="w-3 h-3" />
-                      <span className="truncate">{images[index]?.name}</span>
-                    </div>
-                  </div>
                 </div>
               ))}
             </div>

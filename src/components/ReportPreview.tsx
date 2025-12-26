@@ -75,40 +75,31 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
   const isRealData = !!data;
 
   return (
-    <section className="py-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            {isRealData ? "🎉 你的年度报告" : "预览效果"}
-          </h2>
-          <p className="text-muted-foreground">
-            {isRealData
-              ? `AI 从 ${reportData.totalApps} 个 App 中汇总了你的年度数据`
-              : "上传截图后，AI 将为你生成类似的报告"}
-          </p>
-        </div>
+    <section className="py-10 md:py-12 px-4">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
+          {isRealData ? "🎉 你的年度报告" : "预览效果"}
+        </h2>
 
         {/* Report Container */}
-        <Card className={`${config.bg} p-6 md:p-10 rounded-2xl overflow-hidden relative`}>
+        <Card className={`${config.bg} p-5 md:p-8 rounded-xl overflow-hidden relative`}>
           {isLoading && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-lg font-medium text-foreground">AI 正在分析你的截图...</p>
-                <p className="text-sm text-muted-foreground mt-2">这可能需要 30-60 秒</p>
+                <div className="w-12 h-12 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">AI 正在分析...</p>
               </div>
             </div>
           )}
 
           {/* Header */}
-          <div className="text-center mb-10">
-            <p className="text-sm font-medium text-muted-foreground mb-2">{isRealData ? "专属于你的" : "我的"}</p>
-            <h3 className={`text-3xl md:text-4xl font-bold ${config.accent} mb-2`}>2025 年度总结</h3>
-            <p className="text-sm text-muted-foreground">来自 {reportData.totalApps} 个 App 的数据汇总</p>
+          <div className="text-center mb-6">
+            <h3 className={`text-2xl md:text-3xl font-bold ${config.accent} mb-1`}>2025 年度总结</h3>
+            <p className="text-xs text-muted-foreground">来自 {reportData.totalApps} 个 App</p>
             {reportData.apps && reportData.apps.length > 0 && (
-              <div className="flex flex-wrap gap-2 justify-center mt-4">
+              <div className="flex flex-wrap gap-1.5 justify-center mt-3">
                 {reportData.apps.map((app, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-background/50 rounded-full text-xs text-foreground/70">
+                  <span key={idx} className="px-2 py-0.5 bg-background/50 rounded-full text-xs text-foreground/70">
                     {app}
                   </span>
                 ))}
@@ -118,62 +109,60 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
 
           {/* Stats Grid */}
           {reportData.highlights.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
               {reportData.highlights.slice(0, 6).map((item, index) => (
                 <Card
                   key={index}
-                  className={`${config.cardBg} p-4 border-0 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 opacity-0 animate-fade-in-up`}
-                  style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
+                  className={`${config.cardBg} p-3 border-0 shadow-sm`}
                 >
-                  <div className={`${config.accent} mb-2 animate-bounce-subtle`}>{getIcon(item.icon)}</div>
-                  <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                  <p className={`text-xl md:text-2xl font-bold ${config.accent}`}>
+                  <div className={`${config.accent} mb-1`}>{getIcon(item.icon)}</div>
+                  <p className="text-xs text-muted-foreground">{item.label}</p>
+                  <p className={`text-lg md:text-xl font-bold ${config.accent}`}>
                     <AnimatedNumber value={item.value} duration={2000 + index * 200} />
                   </p>
-                  {item.subtext && <p className="text-xs text-muted-foreground mt-1">{item.subtext}</p>}
+                  {item.subtext && <p className="text-xs text-muted-foreground">{item.subtext}</p>}
                 </Card>
               ))}
             </div>
           )}
 
           {/* Summary */}
-          <Card className={`${config.cardBg} p-6 border-0 opacity-0 animate-fade-in-up`} style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-            <h4 className={`text-lg font-semibold ${config.accent} mb-3`}>✨ AI 年度感言</h4>
-            <p className="text-foreground leading-relaxed whitespace-pre-line">{reportData.summary}</p>
+          <Card className={`${config.cardBg} p-4 border-0`}>
+            <h4 className={`text-sm font-semibold ${config.accent} mb-2`}>✨ AI 年度感言</h4>
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{reportData.summary}</p>
           </Card>
 
           {/* MBTI Section */}
           {reportData.mbti && (
-            <Card className={`${config.cardBg} p-6 border-0 mt-6 opacity-0 animate-fade-in-up`} style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
-              <h4 className={`text-lg font-semibold ${config.accent} mb-3`}>🧠 年度 MBTI</h4>
-              <div className="text-center mb-4">
-                <span className={`text-4xl font-bold ${config.accent} animate-pulse-subtle`}>{reportData.mbti.type}</span>
-                <p className={`text-sm ${config.accent} mt-1`}>{reportData.mbti.title}</p>
+            <Card className={`${config.cardBg} p-4 border-0 mt-4`}>
+              <h4 className={`text-sm font-semibold ${config.accent} mb-2`}>🧠 年度 MBTI</h4>
+              <div className="text-center mb-3">
+                <span className={`text-3xl font-bold ${config.accent}`}>{reportData.mbti.type}</span>
+                <p className={`text-xs ${config.accent} mt-0.5`}>{reportData.mbti.title}</p>
               </div>
               {reportData.mbti.traits && reportData.mbti.traits.length > 0 && (
-                <div className="flex flex-wrap gap-2 justify-center mb-4">
+                <div className="flex flex-wrap gap-1.5 justify-center mb-3">
                   {reportData.mbti.traits.map((trait, idx) => (
-                    <span key={idx} className="px-3 py-1 bg-background/50 rounded-full text-sm text-foreground/80">
+                    <span key={idx} className="px-2 py-0.5 bg-background/50 rounded-full text-xs text-foreground/80">
                       {trait}
                     </span>
                   ))}
                 </div>
               )}
-              <p className="text-foreground leading-relaxed whitespace-pre-line">{reportData.mbti.explanation}</p>
+              <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">{reportData.mbti.explanation}</p>
             </Card>
           )}
 
           {/* Footer */}
-          <div className="text-center mt-8 pt-6 border-t border-border/50 opacity-0 animate-fade-in-up" style={{ animationDelay: '1000ms', animationFillMode: 'forwards' }}>
-            <p className="text-xs text-muted-foreground mb-2">由年度记忆汇总生成 · {new Date().getFullYear()}</p>
+          <div className="text-center mt-6 pt-4 border-t border-border/30">
             <a 
               href="https://github.com/1sh1ro/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Github className="w-3.5 h-3.5" />
-              Powered by 1sh1ro
+              <Github className="w-3 h-3" />
+              1sh1ro
             </a>
           </div>
         </Card>

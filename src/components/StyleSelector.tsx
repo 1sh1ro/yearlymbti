@@ -56,52 +56,28 @@ interface StyleSelectorProps {
 
 const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => {
   return (
-    <section className="py-10 md:py-12 px-4 bg-muted/30">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-5">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-            选择风格
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            为年度总结选择视觉风格
-          </p>
-        </div>
+    <section className="py-6 md:py-8 px-4">
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
+          选择风格
+        </h2>
 
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="flex flex-wrap justify-center gap-2">
           {styles.map((style) => (
-            <Card
+            <button
               key={style.id}
               className={`
-                relative cursor-pointer transition-all duration-300 overflow-hidden
+                flex items-center gap-2 px-3 py-2 rounded-full transition-all text-sm
                 ${selectedStyle === style.id 
-                  ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-105" 
-                  : "hover:scale-102 hover:shadow-lg"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "bg-muted hover:bg-muted/80 text-foreground"
                 }
               `}
               onClick={() => onStyleChange(style.id)}
             >
-              {/* Gradient Preview */}
-              <div className={`h-16 md:h-20 bg-gradient-to-br ${style.gradient} flex items-center justify-center`}>
-                <span className="text-2xl md:text-3xl">{style.preview}</span>
-              </div>
-              
-              {/* Info */}
-              <div className="p-2 md:p-3">
-                <h3 className="font-medium text-foreground text-xs md:text-sm">
-                  {style.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-1 hidden md:block">
-                  {style.description}
-                </p>
-              </div>
-
-              {/* Selected Indicator */}
-              {selectedStyle === style.id && (
-                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-                  <Check className="w-4 h-4" />
-                </div>
-              )}
-            </Card>
+              <span>{style.preview}</span>
+              <span className="font-medium">{style.name}</span>
+            </button>
           ))}
         </div>
       </div>
