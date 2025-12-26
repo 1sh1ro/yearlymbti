@@ -112,7 +112,7 @@ const Index = () => {
           <Twitter className="w-4 h-4" />
         </a>
         <a
-          href="https://github.com/xulaswa"
+          href="https://github.com/1sh1ro"
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90 transition-colors"
