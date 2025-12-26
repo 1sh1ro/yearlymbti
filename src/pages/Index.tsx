@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Twitter, Github } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import AppMarquee from "@/components/AppMarquee";
 import UploadSection from "@/components/UploadSection";
@@ -100,6 +101,25 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      {/* Social Links - Top Left */}
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
+        <a
+          href="https://x.com/xulaswa/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90 transition-colors"
+        >
+          <Twitter className="w-4 h-4" />
+        </a>
+        <a
+          href="https://github.com/xulaswa"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-lg bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90 transition-colors"
+        >
+          <Github className="w-4 h-4" />
+        </a>
+      </div>
       <LanguageSwitcher />
       <HeroSection />
       <AppMarquee />
