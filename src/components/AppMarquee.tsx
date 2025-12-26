@@ -36,10 +36,10 @@ const AppMarquee = () => {
           {duplicatedApps.map((app, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 px-5 py-2.5 mx-2 bg-card rounded-full border border-border/50 whitespace-nowrap shrink-0 shadow-sm"
+              className="flex items-center gap-3 px-6 py-2.5 mx-3 bg-card rounded-full border border-border/50 whitespace-nowrap shrink-0 shadow-sm"
             >
-              <span className="text-lg">{app.emoji}</span>
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-xl">{app.emoji}</span>
+              <span className="text-base font-medium text-foreground">
                 {language === "zh" ? app.name : app.nameEn}
               </span>
             </div>
