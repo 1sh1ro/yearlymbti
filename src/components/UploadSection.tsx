@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { compressImage, formatFileSize } from "@/lib/imageCompression";
+import PrivacyNotice from "./PrivacyNotice";
 
 interface UploadSectionProps {
   onImagesChange: (images: File[]) => void;
@@ -201,6 +202,9 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
             </div>
           </div>
         )}
+
+        {/* Privacy Notice */}
+        <PrivacyNotice />
       </div>
     </section>
   );

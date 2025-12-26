@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import type { ReportStyle } from "./StyleSelector";
 import type { ReportData } from "@/lib/api/analyze";
 import AnimatedNumber from "./AnimatedNumber";
+import ShareCard from "./ShareCard";
 
 interface ReportPreviewProps {
   style: ReportStyle;
@@ -167,6 +168,13 @@ const ReportPreview = ({ style, data, isLoading }: ReportPreviewProps) => {
             </a>
           </div>
         </Card>
+
+        {/* Share Card Section - Only show when real data exists */}
+        {isRealData && data && (
+          <Card className="mt-8 p-6 bg-card border border-border">
+            <ShareCard style={style} data={data} />
+          </Card>
+        )}
       </div>
     </section>
   );
