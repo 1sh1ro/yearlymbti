@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, Plus } from "lucide-react";
 import type { ExtractedAppData } from "@/lib/api/analyze";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DataEditDialogProps {
   open: boolean;
@@ -22,6 +23,7 @@ interface DataEditDialogProps {
 
 const DataEditDialog = ({ open, onOpenChange, extractedData, onSave }: DataEditDialogProps) => {
   const [data, setData] = useState<ExtractedAppData[]>(extractedData);
+  const { t } = useLanguage();
 
   const updateMetric = (appIndex: number, metricIndex: number, field: 'label' | 'value', value: string) => {
     const newData = [...data];
@@ -50,9 +52,9 @@ const DataEditDialog = ({ open, onOpenChange, extractedData, onSave }: DataEditD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>编辑提取的数据</DialogTitle>
+          <DialogTitle>{t("edit.title")}</DialogTitle>
           <DialogDescription>
-            修正AI识别错误的数据，这将影响后续的亮点生成和MBTI推断
+            {t("edit.desc")}
           </DialogDescription>
         </DialogHeader>
 
@@ -64,17 +66,17 @@ const DataEditDialog = ({ open, onOpenChange, extractedData, onSave }: DataEditD
                 {app.metrics.map((metric, metricIndex) => (
                   <div key={metricIndex} className="flex gap-2 items-center">
                     <div className="flex-1">
-                      <Label className="sr-only">标签</Label>
+                      <Label className="sr-only">{t("edit.metricName")}</Label>
                       <Input
-                        placeholder="指标名称"
+                        placeholder={t("edit.metricName")}
                         value={metric.label}
                         onChange={(e) => updateMetric(appIndex, metricIndex, 'label', e.target.value)}
                       />
                     </div>
                     <div className="flex-1">
-                      <Label className="sr-only">值</Label>
+                      <Label className="sr-only">{t("edit.metricValue")}</Label>
                       <Input
-                        placeholder="数值"
+                        placeholder={t("edit.metricValue")}
                         value={metric.value}
                         onChange={(e) => updateMetric(appIndex, metricIndex, 'value', e.target.value)}
                       />
@@ -95,7 +97,7 @@ const DataEditDialog = ({ open, onOpenChange, extractedData, onSave }: DataEditD
                   className="w-full"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  添加指标
+                  {t("edit.addMetric")}
                 </Button>
               </div>
             </div>
@@ -104,10 +106,10 @@ const DataEditDialog = ({ open, onOpenChange, extractedData, onSave }: DataEditD
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            取消
+            {t("edit.cancel")}
           </Button>
           <Button onClick={handleSave}>
-            保存并重新分析
+            {t("edit.saveAndReanalyze")}
           </Button>
         </DialogFooter>
       </DialogContent>
