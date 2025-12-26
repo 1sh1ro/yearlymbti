@@ -1,4 +1,4 @@
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -18,7 +18,13 @@ const GenerateButton = ({ disabled, isLoading, onClick }: GenerateButtonProps) =
           size="lg"
           disabled={disabled || isLoading}
           onClick={onClick}
-          className="w-full h-14 text-base font-semibold"
+          className={`
+            w-full h-14 text-base font-bold rounded-2xl transition-all duration-300 
+            ${!disabled && !isLoading 
+              ? "bg-gradient-to-r from-primary via-primary to-cyan-500 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02]" 
+              : ""
+            }
+          `}
         >
           {isLoading ? (
             <>
@@ -29,12 +35,13 @@ const GenerateButton = ({ disabled, isLoading, onClick }: GenerateButtonProps) =
             <>
               <Sparkles className="w-5 h-5 mr-2" />
               {t("generate.button")}
+              <ArrowRight className="w-5 h-5 ml-2" />
             </>
           )}
         </Button>
         
         {disabled && !isLoading && (
-          <p className="text-sm text-muted-foreground text-center mt-3">
+          <p className="text-sm text-muted-foreground text-center mt-4 animate-pulse-subtle">
             {t("generate.hint")}
           </p>
         )}

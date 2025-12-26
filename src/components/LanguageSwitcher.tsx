@@ -14,9 +14,9 @@ const LanguageSwitcher = () => {
       variant="ghost"
       size="sm"
       onClick={toggleLanguage}
-      className="fixed top-4 right-4 z-50 gap-2 bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90"
+      className="fixed top-4 right-4 z-50 gap-2 bg-card/90 backdrop-blur-md border border-border/50 hover:bg-card hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl"
     >
-      <Globe className="w-4 h-4" />
+      <Globe className="w-4 h-4 text-primary" />
       <span className="text-sm font-medium">{t("lang.switch")}</span>
     </Button>
   );
