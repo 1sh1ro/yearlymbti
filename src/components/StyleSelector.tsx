@@ -56,18 +56,18 @@ interface StyleSelectorProps {
 
 const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => {
   return (
-    <section className="py-16 px-4 bg-card/30">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            选择报告风格
+    <section className="py-10 md:py-12 px-4 bg-muted/30">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-5">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+            选择风格
           </h2>
-          <p className="text-muted-foreground">
-            为你的年度总结选择一个独特的视觉风格
+          <p className="text-sm text-muted-foreground">
+            为年度总结选择视觉风格
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {styles.map((style) => (
             <Card
               key={style.id}
@@ -81,16 +81,16 @@ const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => 
               onClick={() => onStyleChange(style.id)}
             >
               {/* Gradient Preview */}
-              <div className={`h-24 bg-gradient-to-br ${style.gradient} flex items-center justify-center`}>
-                <span className="text-4xl">{style.preview}</span>
+              <div className={`h-16 md:h-20 bg-gradient-to-br ${style.gradient} flex items-center justify-center`}>
+                <span className="text-2xl md:text-3xl">{style.preview}</span>
               </div>
               
               {/* Info */}
-              <div className="p-3">
-                <h3 className="font-semibold text-foreground text-sm mb-1">
+              <div className="p-2 md:p-3">
+                <h3 className="font-medium text-foreground text-xs md:text-sm">
                   {style.name}
                 </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
+                <p className="text-xs text-muted-foreground line-clamp-1 hidden md:block">
                   {style.description}
                 </p>
               </div>

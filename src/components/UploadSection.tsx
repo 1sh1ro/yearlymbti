@@ -66,14 +66,14 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   };
 
   return (
-    <section className="py-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            上传你的年度报告截图
+    <section className="py-12 md:py-16 px-4">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+            上传年度报告截图
           </h2>
-          <p className="text-muted-foreground">
-            支持微信读书、网易云音乐、B站、抖音、支付宝等各类 App 年度报告
+          <p className="text-sm text-muted-foreground">
+            支持微信读书、网易云音乐、B站、抖音、支付宝等
           </p>
         </div>
 
@@ -90,18 +90,18 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <label className="flex flex-col items-center justify-center p-12 cursor-pointer">
+          <label className="flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer">
             <div className={`
-              w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all
+              w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
               ${isDragging ? "bg-primary/20" : "bg-muted/50"}
             `}>
-              <Upload className={`w-8 h-8 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
+              <Upload className={`w-6 h-6 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
             </div>
-            <p className="text-lg font-medium text-foreground mb-2">
-              拖拽图片到这里，或点击上传
+            <p className="text-base font-medium text-foreground mb-1">
+              拖拽或点击上传
             </p>
-            <p className="text-sm text-muted-foreground">
-              支持 PNG、JPG、WEBP 格式
+            <p className="text-xs text-muted-foreground">
+              PNG、JPG、WEBP
             </p>
             <input
               type="file"
@@ -115,14 +115,15 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
 
         {/* Preview Grid */}
         {previews.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-foreground">
-                已上传 {previews.length} 张截图
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-foreground">
+                已上传 {previews.length} 张
               </h3>
               <Button 
                 variant="ghost" 
                 size="sm"
+                className="h-8 text-xs"
                 onClick={() => {
                   previews.forEach(p => URL.revokeObjectURL(p));
                   setImages([]);
@@ -130,11 +131,11 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
                   onImagesChange([]);
                 }}
               >
-                清空全部
+                清空
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
               {previews.map((preview, index) => (
                 <div 
                   key={index}
