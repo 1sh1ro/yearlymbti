@@ -115,9 +115,9 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
   };
 
   return (
-    <section className="py-12 md:py-16 px-6">
+    <section className="py-6 md:py-8 px-6">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-xl md:text-2xl font-semibold text-foreground text-center mb-6">
+        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
           {t("upload.title")}
         </h2>
 
@@ -135,7 +135,7 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <label className="flex flex-col items-center justify-center p-8 md:p-12 cursor-pointer touch-manipulation">
+          <label className="flex flex-col items-center justify-center p-6 md:p-8 cursor-pointer touch-manipulation">
             {isProcessing ? (
               <>
                 <Loader2 className="w-10 h-10 text-primary animate-spin mb-3" />
