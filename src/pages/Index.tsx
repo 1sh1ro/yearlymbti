@@ -8,7 +8,6 @@ import ReportPreview from "@/components/ReportPreview";
 import AnalysisProgress from "@/components/AnalysisProgress";
 import DataEditDialog from "@/components/DataEditDialog";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import SocialLinks from "@/components/SocialLinks";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { analyzeReportsStream, type ReportData, type AnalysisStage, type ExtractedAppData, type StrictMode } from "@/lib/api/analyze";
@@ -101,7 +100,6 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <SocialLinks />
       <LanguageSwitcher />
       <HeroSection />
       <AppMarquee />

@@ -25,20 +25,20 @@ const AppMarquee = () => {
   const duplicatedApps = [...supportedApps, ...supportedApps];
 
   return (
-    <div className="pt-16 pb-8 overflow-hidden">
+    <div className="pt-20 pb-6 overflow-hidden">
       <div className="relative">
         {/* Gradient masks for fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         
         {/* Scrolling container */}
         <div className="flex animate-marquee">
           {duplicatedApps.map((app, index) => (
             <div
               key={index}
-              className="flex items-center gap-3 px-6 py-3 mx-3 bg-gradient-to-br from-card to-card/80 rounded-2xl border border-border/60 whitespace-nowrap shrink-0 shadow-md hover:shadow-lg hover:border-primary/40 hover:scale-105 transition-all duration-300 cursor-default"
+              className="flex items-center gap-3 px-6 py-2.5 mx-3 bg-card rounded-full border border-border/50 whitespace-nowrap shrink-0 shadow-sm"
             >
-              <span className="text-2xl">{app.emoji}</span>
+              <span className="text-xl">{app.emoji}</span>
               <span className="text-base font-medium text-foreground">
                 {language === "zh" ? app.name : app.nameEn}
               </span>
