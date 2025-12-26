@@ -193,6 +193,14 @@ All colors MUST be HSL.
   .animate-pulse-subtle {
     animation: pulseSubtle 2s ease-in-out infinite;
   }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
 }
 
 @keyframes fadeIn {
@@ -243,5 +251,14 @@ All colors MUST be HSL.
   50% {
     opacity: 0.8;
     transform: scale(1.02);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }

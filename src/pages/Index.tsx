@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import HeroSection from "@/components/HeroSection";
+import AppMarquee from "@/components/AppMarquee";
 import UploadSection from "@/components/UploadSection";
 import StyleSelector, { type ReportStyle } from "@/components/StyleSelector";
 import GenerateButton from "@/components/GenerateButton";
@@ -101,6 +102,7 @@ const Index = () => {
     <main className="min-h-screen bg-background">
       <LanguageSwitcher />
       <HeroSection />
+      <AppMarquee />
       <UploadSection onImagesChange={setImages} />
       <StyleSelector selectedStyle={selectedStyle} onStyleChange={setSelectedStyle} />
       <GenerateButton
