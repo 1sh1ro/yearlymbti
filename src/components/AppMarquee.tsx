@@ -25,21 +25,21 @@ const AppMarquee = () => {
   const duplicatedApps = [...supportedApps, ...supportedApps];
 
   return (
-    <div className="py-4 overflow-hidden">
+    <div className="py-5 overflow-hidden">
       <div className="relative">
         {/* Gradient masks for fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
         
         {/* Scrolling container */}
         <div className="flex animate-marquee">
           {duplicatedApps.map((app, index) => (
             <div
               key={index}
-              className="flex items-center gap-1.5 px-3 py-1.5 mx-1.5 bg-card/80 rounded-full border border-border/30 whitespace-nowrap shrink-0 text-xs"
+              className="flex items-center gap-2 px-4 py-2 mx-2 bg-card/80 rounded-full border border-border/40 whitespace-nowrap shrink-0"
             >
-              <span>{app.emoji}</span>
-              <span className="font-medium text-muted-foreground">
+              <span className="text-base">{app.emoji}</span>
+              <span className="text-sm font-medium text-foreground/80">
                 {language === "zh" ? app.name : app.nameEn}
               </span>
             </div>
