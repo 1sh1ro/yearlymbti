@@ -18,14 +18,87 @@ serve(async (req) => {
   }
 
   try {
+    // Input validation constants
+    const MAX_IMAGES = 20;
+    const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB per image
+    const MAX_TOTAL_PAYLOAD_BYTES = 100 * 1024 * 1024; // 100MB total
+    const VALID_IMAGE_PREFIXES = ['data:image/jpeg', 'data:image/png', 'data:image/webp', 'data:image/gif'];
+    
     const { images, style, strictMode } = await req.json();
     
+    // Validate images array exists
     if (!images || !Array.isArray(images) || images.length === 0) {
       return new Response(
         JSON.stringify({ error: '请至少上传一张截图' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    // Validate image count
+    if (images.length > MAX_IMAGES) {
+      return new Response(
+        JSON.stringify({ error: `最多上传 ${MAX_IMAGES} 张图片` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Validate each image
+    let totalPayloadSize = 0;
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      
+      // Check if image is a string
+      if (typeof image !== 'string') {
+        return new Response(
+          JSON.stringify({ error: `第 ${i + 1} 张图片格式无效` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Check image format (must be data URL with valid image type)
+      const hasValidPrefix = VALID_IMAGE_PREFIXES.some(prefix => image.startsWith(prefix));
+      if (!hasValidPrefix) {
+        return new Response(
+          JSON.stringify({ error: `第 ${i + 1} 张图片格式不支持，请上传 JPEG、PNG、WebP 或 GIF 格式` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Estimate base64 decoded size (base64 is ~33% larger than original)
+      const base64Part = image.split(',')[1] || '';
+      const estimatedSize = Math.ceil(base64Part.length * 0.75);
+      
+      if (estimatedSize > MAX_IMAGE_SIZE_BYTES) {
+        return new Response(
+          JSON.stringify({ error: `第 ${i + 1} 张图片超过 10MB 限制` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      totalPayloadSize += estimatedSize;
+    }
+    
+    // Validate total payload size
+    if (totalPayloadSize > MAX_TOTAL_PAYLOAD_BYTES) {
+      return new Response(
+        JSON.stringify({ error: '图片总大小超过 100MB 限制' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Validate style parameter
+    const validStyles = ['playful', 'minimal', 'tech', 'artistic'];
+    if (style && !validStyles.includes(style)) {
+      console.warn(`Invalid style received: ${style}, defaulting to playful`);
+    }
+    
+    // Validate strictMode parameter
+    const validModes = ['normal', 'strict', 'loose'];
+    if (strictMode && !validModes.includes(strictMode)) {
+      console.warn(`Invalid strictMode received: ${strictMode}, defaulting to normal`);
+    }
+    
+    console.log(`Input validation passed: ${images.length} images, ~${Math.round(totalPayloadSize / 1024 / 1024)}MB total`);
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
