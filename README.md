@@ -1,73 +1,49 @@
-# Welcome to your Lovable project
+# 📊 年度报告生成器
 
-## Project info
+一个基于 AI 的年度报告生成工具，上传你的各类 App 年度总结截图，自动分析并生成专属于你的年度报告！
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## ✨ 功能特点
 
-## How can I edit this code?
+- 🖼️ **智能识别** - 自动识别淘宝、美团、B站等主流 App 的年度报告截图
+- 📈 **数据提取** - AI 精准提取消费金额、观看时长、订单数量等关键数据
+- 🎭 **MBTI 分析** - 根据你的行为数据推断性格特征
+- ✍️ **个性化感言** - 生成多种风格（搞笑/文艺/极简/励志）的年度总结
+- 🎨 **实时进度** - 精美的分析进度动画，5个阶段可视化展示
 
-There are several ways of editing your application.
+## 🛠️ 技术栈
 
-**Use Lovable**
+- **前端**: React + TypeScript + Vite
+- **样式**: Tailwind CSS + shadcn/ui
+- **后端**: Supabase Edge Functions
+- **AI**: Lovable AI Gateway (Gemini 2.5 Flash)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🚀 快速开始
 
-Changes made via Lovable will be committed automatically to this repo.
+```bash
+# 克隆项目
+git clone <your-repo-url>
 
-**Use your preferred IDE**
+# 安装依赖
+npm install
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 启动开发服务器
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 📱 使用方法
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. 上传你的 App 年度报告截图（支持多张）
+2. 选择报告风格（搞笑/文艺/极简/励志）
+3. 点击"生成报告"
+4. 等待 AI 分析完成，查看你的专属年度报告
 
-**Use GitHub Codespaces**
+## 📸 支持的 App
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- 淘宝/天猫 年度账单
+- 美团 年度报告
+- B站 年度总结
+- 更多 App 持续支持中...
 
-## What technologies are used for this project?
+## 📄 License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT License
