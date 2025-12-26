@@ -218,41 +218,89 @@ const AnalysisProgress = ({ stages, onEditData, onReanalyze }: AnalysisProgressP
             JP?: MBTIConfidence; 
           } 
         };
+        
+        const dimensionLabels: Record<string, { left: string; right: string; leftDesc: string; rightDesc: string }> = {
+          EI: { left: 'E 外向', right: 'I 内向', leftDesc: '社交活跃、分享频繁', rightDesc: '独处偏好、深度阅读' },
+          NS: { left: 'N 直觉', right: 'S 感知', leftDesc: '探索新事物、涉猎广泛', rightDesc: '专注实际、稳定偏好' },
+          TF: { left: 'T 思考', right: 'F 情感', leftDesc: '知识/技术内容偏好', rightDesc: '娱乐/情感内容偏好' },
+          JP: { left: 'J 判断', right: 'P 感知', leftDesc: '规律使用、计划型', rightDesc: '随性使用、即兴型' }
+        };
+        
         return (
           <div className="text-sm space-y-4 animate-fade-in">
+            {/* MBTI 类型展示 */}
             <div className="text-center py-3">
               <div className="inline-block px-6 py-3 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30">
                 <span className="text-3xl font-bold text-primary tracking-wider">{mbtiData.type}</span>
               </div>
               <p className="text-muted-foreground mt-2">{mbtiData.title}</p>
             </div>
+            
+            {/* 维度推断依据 */}
             {mbtiData.confidence && (
-              <div className="grid grid-cols-2 gap-2">
-                {Object.entries(mbtiData.confidence).map(([key, val], i) => (
-                  <div 
-                    key={key} 
-                    className="bg-secondary/50 p-3 rounded-lg border border-border/30 transition-all hover:border-primary/30"
-                    style={{ animationDelay: `${i * 100}ms` }}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg text-foreground">{val.letter}</span>
-                      <div className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        val.confidence > 0.7 ? 'bg-primary/20 text-primary' : 
-                        val.confidence > 0.5 ? 'bg-yellow-500/20 text-yellow-600' : 
-                        'bg-destructive/20 text-destructive'
-                      }`}>
-                        {Math.round(val.confidence * 100)}%
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  仅基于行为数据的娱乐性推断，非专业测评
+                </p>
+                
+                {Object.entries(mbtiData.confidence).map(([key, val], i) => {
+                  const labels = dimensionLabels[key];
+                  const isLeft = val.letter === key[0];
+                  
+                  return (
+                    <div 
+                      key={key} 
+                      className="bg-secondary/30 p-4 rounded-xl border border-border/30 transition-all hover:border-primary/30 hover:bg-secondary/40"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    >
+                      {/* 维度标题和置信度 */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-xl text-primary">{val.letter}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {isLeft ? labels?.left : labels?.right}
+                          </span>
+                        </div>
+                        <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          val.confidence > 0.7 ? 'bg-primary/20 text-primary' : 
+                          val.confidence > 0.5 ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {Math.round(val.confidence * 100)}% 置信
+                        </div>
+                      </div>
+                      
+                      {/* 双向进度条 */}
+                      <div className="relative mb-3">
+                        <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                          <span className={isLeft ? 'text-primary font-medium' : ''}>{labels?.left}</span>
+                          <span className={!isLeft ? 'text-primary font-medium' : ''}>{labels?.right}</span>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden relative">
+                          {/* 中线 */}
+                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border z-10" />
+                          {/* 进度条 */}
+                          <div 
+                            className="absolute top-0 bottom-0 bg-primary/80 rounded-full transition-all duration-500"
+                            style={{ 
+                              left: isLeft ? `${50 - val.confidence * 50}%` : '50%',
+                              right: isLeft ? '50%' : `${50 - val.confidence * 50}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* 推断依据 */}
+                      <div className="bg-background/50 rounded-lg p-2.5 border border-border/20">
+                        <p className="text-xs text-muted-foreground flex items-start gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                          <span className="leading-relaxed">{val.reason}</span>
+                        </p>
                       </div>
                     </div>
-                    <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-2">
-                      <div 
-                        className="h-full bg-primary rounded-full transition-all duration-500"
-                        style={{ width: `${val.confidence * 100}%` }}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">{val.reason}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
