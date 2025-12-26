@@ -398,11 +398,11 @@ serve(async (req) => {
             messages: [
               { 
                 role: 'system', 
-                content: `你是文案大师。根据所有分析结果写一段走心的年度感言。风格：${getStyleDescription(style)}。要像朋友写的信，引用具体数据，150-250字。` 
+                content: `你是文案大师。根据所有分析结果写一段走心的2025年度感言。风格：${getStyleDescription(style)}。要像朋友写的信，引用具体数据，150-250字。重要：这是2025年的年度报告，请明确提到2025年。` 
               },
               { 
                 role: 'user', 
-                content: `根据这些分析结果写年度感言：
+                content: `根据这些分析结果写2025年度感言：
 亮点：${JSON.stringify(insights.highlights)}
 MBTI：${mbti.type} ${mbti.title}` 
               }
