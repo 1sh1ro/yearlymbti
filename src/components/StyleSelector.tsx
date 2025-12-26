@@ -56,18 +56,18 @@ interface StyleSelectorProps {
 
 const StyleSelector = ({ selectedStyle, onStyleChange }: StyleSelectorProps) => {
   return (
-    <section className="py-6 md:py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-lg md:text-xl font-semibold text-foreground text-center mb-4">
+    <section className="py-10 md:py-12 px-6">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-xl md:text-2xl font-semibold text-foreground text-center mb-6">
           选择风格
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-3">
           {styles.map((style) => (
             <button
               key={style.id}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all text-sm
+                flex items-center gap-2 px-4 py-2.5 rounded-full transition-all text-base
                 ${selectedStyle === style.id 
                   ? "bg-primary text-primary-foreground shadow-md" 
                   : "bg-muted hover:bg-muted/80 text-foreground"
