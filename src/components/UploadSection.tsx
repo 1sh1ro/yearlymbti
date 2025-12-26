@@ -90,15 +90,15 @@ const UploadSection = ({ onImagesChange }: UploadSectionProps) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
         >
-          <label className="flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer">
+          <label className="flex flex-col items-center justify-center p-6 md:p-10 cursor-pointer touch-manipulation">
             <div className={`
-              w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
+              w-14 h-14 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-3 transition-all
               ${isDragging ? "bg-primary/20" : "bg-muted/50"}
             `}>
-              <Upload className={`w-6 h-6 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
+              <Upload className={`w-7 h-7 md:w-7 md:h-7 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
             </div>
             <p className="text-base font-medium text-foreground mb-1">
-              拖拽或点击上传
+              <span className="hidden md:inline">拖拽或</span>点击上传
             </p>
             <p className="text-xs text-muted-foreground">
               PNG、JPG、WEBP
